@@ -1,5 +1,6 @@
 $(document).ready(function(){
 	var currentReplace = 1;
+	$("#inputCFGtoCNF").val("S => ASA | aB \nA => B | S  \nB => b | e");
 	$("#inputCFGtoCNF").on('input',function(){
 		checkInput(this.value);
 		// a*(a|b*)(a|b|c|b|d)*
@@ -26,7 +27,7 @@ $(document).ready(function(){
 		for(var key in cfg) {
 			outputString += ( key + " => "  )
 			for(var i = 0 ; i < cfg[key].length; i++) {
-				outputString += ( cfg[key][i] + " | " )
+				outputString += ( cfg[key][i] + ((i != cfg[key].length - 1) ? " | " : "") )
 			}
 			outputString += "<br>"
 		}
