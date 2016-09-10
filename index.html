@@ -4,6 +4,7 @@
 	<title>FSM Sim</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	<script src="jquery-1.12.0.min.js"></script>
+	<script src="cnf.js"></script>
 
 </head>
 <body>
@@ -69,6 +70,13 @@
 			<button id="convert" class="btn btn-default">Convert</button>
 			<p id="output"></p>
 		</div>
+		<div class="container">
+			<h3>CFG into Chomsky normal form (CNF).</h3>
+			<textarea name="input" id="inputCFGtoCNF" cols="20" rows="10" placeholder="Use 'e' as Epsilon" class="form-control"></textarea>
+			</p>
+			<button id="convert" class="btn btn-default">Convert</button>
+			<p id="output"></p>
+		</div>
       </div>
 
     </div>
@@ -100,4 +108,6 @@
 			$("#status-text").text("Match!");
 		}
 	}
+
+
 </script>
