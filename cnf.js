@@ -6,6 +6,7 @@ $(document).ready(function(){
 		// a*(a|b*)(a|b|c|b|d)*
 	})
 	function checkInput(inputStr) {
+		currentReplace = 1;
 		var cfg = CFGParse(inputStr);
 		cfg = insertStartSymbol(cfg);
 		removeEpsilons(cfg);
