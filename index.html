@@ -50,16 +50,25 @@
 
       <!-- Main component for a primary marketing message or call to action -->
       <div class="jumbotron">
-        <h3>DFA Checker</h3>
-		  <div class="form-group">
-		    <input type="text" class="form-control" id="txtInputExp" placeholder="Input DFA">
-		  </div>
-  		  <div class="form-group">
-		    <input type="text" class="form-control" id="txtInputStr" placeholder="Input String To Test">
-		  </div>
+      	<div class="container">
+	        <h3>DFA Checker</h3>
+			  <div class="form-group">
+			    <input type="text" class="form-control" id="txtInputExp" placeholder="Input DFA">
+			  </div>
+	  		  <div class="form-group">
+			    <input type="text" class="form-control" id="txtInputStr" placeholder="Input String To Test">
+			  </div>
 
-		  <p id="status-text">Not Matching</p>
-		  <!-- <button class="btn btn-default" id="check">Check</button> -->
+			  <p id="status-text">Not Matching</p>
+			  <!-- <button class="btn btn-default" id="check">Check</button> -->
+		</div>
+		<div class="container">
+			<h3>NFA To DFA</h3>
+			<textarea name="input" id="inputCFG" cols="20" rows="10" placeholder="Use 'e' as Epsilon" class="form-control"></textarea>
+			</p>
+			<button id="convert" class="btn btn-default">Convert</button>
+			<p id="output"></p>
+		</div>
       </div>
 
     </div>
