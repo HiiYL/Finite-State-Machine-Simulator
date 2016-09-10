@@ -18,7 +18,19 @@ $(document).ready(function(){
 		console.log(cfg);
 		replaceSymbolNewOnly(cfg);
 		console.log(cfg);
+		$("#outputCNF").html(display(cfg));
 
+	}
+	function display(cfg) {
+		outputString = ""
+		for(var key in cfg) {
+			outputString += ( key + " => "  )
+			for(var i = 0 ; i < cfg[key].length; i++) {
+				outputString += ( cfg[key][i] + " | " )
+			}
+			outputString += "<br>"
+		}
+		return outputString
 	}
 	S => ASA | aB
 	A => B | S 
