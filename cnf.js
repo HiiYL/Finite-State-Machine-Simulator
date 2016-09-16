@@ -18,10 +18,10 @@ $(document).ready(function(){
 		// console.log(cfg);
 		removeUnitRules(cfg);
 		console.log(cfg);
-		// // removeFromArray(cfg['S'], 'S');
-		// cfg['S0'] = cfg['S']
-		// // // console.log(cfg);
-		// replaceSymbol(cfg);
+
+		insertNewSymbols(cfg);
+
+		console.log(cfg);
 		// // // console.log(cfg);
 		// insertNewSymbols(cfg);
 		// // console.log(cfg);
@@ -38,13 +38,58 @@ $(document).ready(function(){
 				if(value.length == 1 && (value == value.toUpperCase())) {
 					// console.log(newCFGValues);
 					removeFromArrayAndReplace(newCFGValues, value, cfg[value]);
-					newCFGValues = [].concat.apply([], newCFGValues);
-					// removeFromArray(newCFGValues,value);
-					// newCFGValues = newCFGValues.concat(cfg[value]);
+					newCFGValues = [].concat.apply([], newCFGValues); //flatten array
 				}
 			}
 			cfg[key] = newCFGValues
 		}
+	}
+
+	function insertNewSymbols(cfg) {
+		auxDict = {}
+		for(var key in cfg) {
+			for(var i = 0 ; i < cfg[key].length; i++) {
+				value = cfg[key][i];
+				if(value.length > 2) {
+					currKey = getKeysByValue(auxDict, value.slice(-2));
+					if(currKey.length == 0 ) {
+						newSymbol = getUnusedKey(cfg);
+						auxDict[newSymbol] = [value.slice(-2)];
+						currKey = newSymbol;
+					}
+					value = value.replace(value.slice(-2), currKey)
+					cfg[key][i] = value
+				}
+			}
+		}
+		for (var attrname in auxDict) { cfg[attrname] = auxDict[attrname]; }
+	}
+
+	// function replaceSymbols(cfg, auxDict) {
+	// 	for(var key in auxDict) {
+	// 		for(int i = 0 ; i < auxDict[key].length ; i ++) {
+	// 			value = auxDict[key][i]
+
+	// 			for(var cfgKey in cfg) {
+	// 				for(var j = 0 ; j < cfg[cfgKey].length; j++) {
+	// 					cfgValue = cfg[key][i];
+	// 					if(getKeysByValue(auxDict, cfgValue.slice(-2)).length == 0 ) {
+
+	// 					}
+
+
+	// 		}
+	// 	}
+	// }
+
+	function getUnusedKey(cfg) {
+		for (i = 65; i <= 90; i++) {
+			currAlphabet = String.fromCharCode(i).toUpperCase();
+			if (!(currAlphabet in cfg )) {
+				return currAlphabet; 
+			}
+		}
+		console.log("NO ALPHABETS LEFT!!!!");
 	}
 	function display(cfg) {
 		outputString = ""
@@ -101,54 +146,24 @@ $(document).ready(function(){
 			}
 		}
 	}
-
-	function replaceSymbol(cfg) {
-		for(key in cfg) {
-			// console.log(key);
-			var keysContainingSymbol = getKeysByValue(cfg, key, exact=true);
-			if(keysContainingSymbol.length > 0) {
-				// console.log("Keys Containing Symbol: " + keysContainingSymbol);
-				for(var i = 0 ; i < keysContainingSymbol.length; i++) {
-					var foundKey = keysContainingSymbol[i];
-					// console.log(foundKey);
-					removeFromArray(cfg[foundKey], key);
-					cfg[foundKey] = cfg[foundKey].concat(cfg[key]);
-				}
-
-			}else {
-				// console.log("EMPTY!");
-			}
-		}
-	}
-			// 	for(var i = 0 ; i < listOfValues.length; i++) {
-			// 	if(listOfValues[i].length > 2) {
-			// 		newValue = [listOfValues[i].slice(-2)][0]
-			// 		console.log(typeof(newValue))
-			// 		if(searchStringInArray(newValue, addedSymbolsList, true) !== -5) {
-			// 			cfg[ "A" + currentReplace ] = newValue
-			// 			addedSymbolsList = addedSymbolsList.concat(newValue)
-			// 			currentReplace = currentReplace + 1
-			// 		}
-			// 	}
-			// }
-	function insertNewSymbols(cfg) {
-		addedSymbolsList = []
-		for(var key in cfg) {
-			console.log(cfg[key])
-			listOfValues = cfg[key]
-			for(var i = 0 ; i < listOfValues.length; i++) {
-				if(listOfValues[i].length > 2) {
-					newValue = [listOfValues[i].slice(-2)][0]
-					if(searchStringInArray(newValue,addedSymbolsList, true) === -1) {
-						// console.log("LENGTH GREATER THAN 2")
-						cfg[ "A" + currentReplace ] = [ newValue ]
-						addedSymbolsList.push(newValue)
-						currentReplace = currentReplace + 1
-					}
-				}
-			}
-		}
-	}
+	// function insertNewSymbols(cfg) {
+	// 	addedSymbolsList = []
+	// 	for(var key in cfg) {
+	// 		console.log(cfg[key])
+	// 		listOfValues = cfg[key]
+	// 		for(var i = 0 ; i < listOfValues.length; i++) {
+	// 			if(listOfValues[i].length > 2) {
+	// 				newValue = [listOfValues[i].slice(-2)][0]
+	// 				if(searchStringInArray(newValue,addedSymbolsList, true) === -1) {
+	// 					// console.log("LENGTH GREATER THAN 2")
+	// 					cfg[ "A" + currentReplace ] = [ newValue ]
+	// 					addedSymbolsList.push(newValue)
+	// 					currentReplace = currentReplace + 1
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// }
 
 	function removeEpsilons(cfg) {
 		//console.log(cfg);
