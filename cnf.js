@@ -8,20 +8,43 @@ $(document).ready(function(){
 	function checkInput(inputStr) {
 		currentReplace = 1;
 		var cfg = CFGParse(inputStr);
-		cfg = insertStartSymbol(cfg);
-		removeEpsilons(cfg);
-		removeEpsilons(cfg);
-		// removeFromArray(cfg['S'], 'S');
-		cfg['S0'] = cfg['S']
+		// console.log(getKeysByValue(cfg, 'S'));
+		if(getKeysByValue(cfg, 'S').length > 0) {
+		  cfg = insertStartSymbol(cfg);
+		}
+		while(getKeysByValue(cfg, 'e').length > 0) {
+		  removeEpsilons(cfg);
+		}
 		// console.log(cfg);
-		replaceSymbol(cfg);
-		// console.log(cfg);
-		insertNewSymbols(cfg);
+		removeUnitRules(cfg);
 		console.log(cfg);
-		replaceSymbolNewOnly(cfg);
-		console.log(cfg);
+		// // removeFromArray(cfg['S'], 'S');
+		// cfg['S0'] = cfg['S']
+		// // // console.log(cfg);
+		// replaceSymbol(cfg);
+		// // // console.log(cfg);
+		// insertNewSymbols(cfg);
+		// // console.log(cfg);
+		// replaceSymbolNewOnly(cfg);
+		// // console.log(cfg);
 		$("#outputCNF").html(display(cfg));
 
+	}
+	function removeUnitRules(cfg) {
+		for(var key in cfg) {
+			newCFGValues = cfg[key]
+			for(var i = 0 ; i < cfg[key].length; i++) {
+				value = cfg[key][i];
+				if(value.length == 1 && (value == value.toUpperCase())) {
+					// console.log(newCFGValues);
+					removeFromArrayAndReplace(newCFGValues, value, cfg[value]);
+					newCFGValues = [].concat.apply([], newCFGValues);
+					// removeFromArray(newCFGValues,value);
+					// newCFGValues = newCFGValues.concat(cfg[value]);
+				}
+			}
+			cfg[key] = newCFGValues
+		}
 	}
 	function display(cfg) {
 		outputString = ""
@@ -59,7 +82,7 @@ $(document).ready(function(){
 		}
 	}
 	function insertStartSymbol(cfg) {
-		cfg['S0'] = 'S'
+		cfg['S0'] = ['S']
 		return cfg
 	};
 
@@ -232,6 +255,9 @@ $(document).ready(function(){
 	}
 	function removeFromArray(object, value ) {
 		return object.splice(object.indexOf(value), 1);
+	}
+	function removeFromArrayAndReplace(object, value, array ) {
+		return object.splice(object.indexOf(value), 1,array);
 	}
 
 	var filtered_keys = function(obj, filter) {
