@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>FSM Sim</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <script src="jquery-1.12.0.min.js"></script>
+	<title>FSM Sim</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script src="jquery-1.12.0.min.js"></script>
+	<script src="cnf.js"></script>
 
 </head>
 <body>
@@ -50,30 +51,36 @@
 
       <!-- Main component for a primary marketing message or call to action -->
       <div class="jumbotron">
-          <div class="container">
-            <h3>DFA Checker</h3>
-          <div class="form-group">
-            <input type="text" class="form-control" id="txtInputExp" placeholder="Input DFA">
-          </div>
-            <div class="form-group">
-            <input type="text" class="form-control" id="txtInputStr" placeholder="Input String To Test">
-            </div>
+    <div class="container">
+      <h3>DFA Checker</h3>
+    <div class="form-group">
+      <input type="text" class="form-control" id="txtInputExp" placeholder="Input DFA">
+    </div>
+      <div class="form-group">
+      <input type="text" class="form-control" id="txtInputStr" placeholder="Input String To Test">
+      </div>
 
-          <p id="status-text">Not Matching</p>
-          <!-- <button class="btn btn-default" id="check">Check</button> -->
-          </div>
-          <div class="container">
-            <h3>NFA To DFA</h3>
-            <textarea name="input" id="inputCFG" cols="20" rows="10" placeholder="Use 'e' as Epsilon" class="form-control"></textarea>
-            
-            <button onclick="checkGrammar()" id="convert" class="btn btn-default">Convert</button>
-            
-          </div>
+    <p id="status-text">Not Matching</p>
+    <!-- <button class="btn btn-default" id="check">Check</button> -->
+    </div>
+    <div class="container">
+      <h3>NFA To DFA</h3>
+      <textarea name="input" id="inputCFG" cols="20" rows="10" placeholder="Use 'e' as Epsilon" class="form-control"></textarea>
+      
+      <button onclick="checkGrammar()" id="convert" class="btn btn-default">Convert</button>
+      
+    </div>
 
-          <div class="outputTable">
-            <h3>NFA->DFA Conversion</h3>
-            <p id="output">Null</p>
-          </div>
+    <div class="outputTable">
+      <h3>NFA->DFA Conversion</h3>
+      <p id="output">Null</p>
+    </div>
+		<div class="container">
+			<h3>CFG into Chomsky normal form (CNF).</h3>
+			<textarea name="input" id="inputCFGtoCNF" cols="20" rows="10" placeholder="Use 'e' as Epsilon" class="form-control"></textarea>
+			</p>
+			<p id="outputCNF">Output will be here!</p>
+		</div>
       </div>
 
     </div>
@@ -156,8 +163,13 @@
 
       else
       {
+<<<<<<< HEAD
           string_recursive($output + $leftOvers.charAt(0), $leftOvers.substring(1, $leftOvers.length));
           string_recursive($output, $leftOvers.substring(1, $leftOvers.length));
+=======
+          string_recursive($powerSetNumber ,$output + $leftOvers.charAt(0), $leftOvers.substring(1, $leftOvers.length));
+          string_recursive($powerSetNumber ,$output, $leftOvers.substring(1, $leftOvers.length));
+>>>>>>> e3abdc4dbd2443cf71cd629e10b647ad9fe3dd31
       }
       // return powerSets;
   }
