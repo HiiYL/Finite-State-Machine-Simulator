@@ -1,33 +1,51 @@
 $(document).ready(function(){
 	var currentReplace = 1;
-	$("#inputCFGtoCNF").val("S => ASA | aB \nA => B | S  \nB => b | e");
+	// $("#inputCFGtoCNF").val("S => ASA | aB \nA => B | S  \nB => b | e");
+	$("#inputCFGtoCNF").val("S => aXbX \nX => aY | bY | e \nY => X | c");
 	$("#inputCFGtoCNF").on('input',function(){
 		checkInput(this.value);
 		// a*(a|b*)(a|b|c|b|d)*
 	})
+
+	S => aXbX
+	X => aY | bY | e
+	Y => X | c
+
+	var removedKeys = []
 	function checkInput(inputStr) {
 		currentReplace = 1;
 		var cfg = CFGParse(inputStr);
+		removedKeys = []
 		// console.log(getKeysByValue(cfg, 'S'));
-		if(getKeysByValue(cfg, 'S').length > 0) {
-		  cfg = insertStartSymbol(cfg);
-		}
-		while(getKeysByValue(cfg, 'e').length > 0) {
-		  removeEpsilons(cfg);
-		}
-		// console.log(cfg);
-		removeUnitRules(cfg);
-		console.log(cfg);
 
-		insertNewSymbols(cfg);
+		if(cfg !== undefined) {
+			// console.log(cfg);
+			if(getKeysByValue(cfg, 'S').length > 0) {
+			  cfg = insertStartSymbol(cfg);
+			}
 
-		console.log(cfg);
-		// // // console.log(cfg);
-		// insertNewSymbols(cfg);
-		// // console.log(cfg);
-		// replaceSymbolNewOnly(cfg);
-		// // console.log(cfg);
-		$("#outputCNF").html(display(cfg));
+			i = 0
+			while(getKeysByValue(cfg, 'e').length > 0) {
+			  if(i > 20) {
+			  	break
+			  }
+		      removeEpsilons(cfg);
+			  i++;
+			}
+			console.log(cfg);
+
+			
+
+
+
+			removeUnitRules(cfg);
+			console.log(cfg);
+
+			insertNewSymbols(cfg);
+			console.log(cfg);
+
+			$("#outputCNF").html(display(cfg));
+		}
 
 	}
 	function removeUnitRules(cfg) {
@@ -53,39 +71,38 @@ $(document).ready(function(){
 				if(value.length > 2) {
 					currKey = getKeysByValue(auxDict, value.slice(-2));
 					if(currKey.length == 0 ) {
-						newSymbol = getUnusedKey(cfg);
+						newSymbol = getUnusedKey(cfg, auxDict);
 						auxDict[newSymbol] = [value.slice(-2)];
 						currKey = newSymbol;
 					}
 					value = value.replace(value.slice(-2), currKey)
 					cfg[key][i] = value
+				}else if(value.length == 2) {
+					if (isUpperCase(value[0]) && isUpperCase(value[1])) {
+						continue;
+					}else if(!isUpperCase(value[0]) && isUpperCase(value[1])) {
+						currKey = getKeysByValue(auxDict, value[0]);
+						if(currKey.length == 0 ) {
+							newSymbol = getUnusedKey(cfg, auxDict);
+							auxDict[newSymbol] = [ value[0] ];
+							currKey = newSymbol;
+						}
+						value = value.replace(value[0], currKey)
+						cfg[key][i] = value
+					}
 				}
 			}
 		}
 		for (var attrname in auxDict) { cfg[attrname] = auxDict[attrname]; }
 	}
+	function isUpperCase(char) {
+		return (char == char.toUpperCase())
+	}
 
-	// function replaceSymbols(cfg, auxDict) {
-	// 	for(var key in auxDict) {
-	// 		for(int i = 0 ; i < auxDict[key].length ; i ++) {
-	// 			value = auxDict[key][i]
-
-	// 			for(var cfgKey in cfg) {
-	// 				for(var j = 0 ; j < cfg[cfgKey].length; j++) {
-	// 					cfgValue = cfg[key][i];
-	// 					if(getKeysByValue(auxDict, cfgValue.slice(-2)).length == 0 ) {
-
-	// 					}
-
-
-	// 		}
-	// 	}
-	// }
-
-	function getUnusedKey(cfg) {
+	function getUnusedKey(cfg, auxDict = {}) {
 		for (i = 65; i <= 90; i++) {
 			currAlphabet = String.fromCharCode(i).toUpperCase();
-			if (!(currAlphabet in cfg )) {
+			if (!(currAlphabet in cfg ) && !(currAlphabet in auxDict)) {
 				return currAlphabet; 
 			}
 		}
@@ -114,7 +131,7 @@ $(document).ready(function(){
 				for(var i = 0;i < lines.length;i++){
 					var split = lines[i].split("=>");
 						var left = split[0].trim();
-						var right = split[1].split("|").map(function(obj) { return obj.trim(); });
+						var right = split[1].split("|").map(function(obj) { return obj.trim(); }).filter(Boolean);
 						//console.log(left + " " + right);
 						cfg[left] = right;
 				}
@@ -131,64 +148,96 @@ $(document).ready(function(){
 		return cfg
 	};
 
-	function replaceSymbolNewOnly(cfg) {
-		var newKeys = filtered_keys(cfg, /A[0-9]/);
-			// var keysContainingSymbol = getKeysByValue(cfg, key, exact=false);
-		for(var i = 0 ; i < newKeys.length ; i ++) {
-			var toMatch = cfg[newKeys[i]]
-			for(var key in cfg) {
-				for(var j = 0 ; j < cfg[key].length; j++) {
-					if(cfg[key][j].length > 2) {
-						console.log(cfg[key][j] + " " + toMatch + " " + newKeys[i]);
-						cfg[key][j] = cfg[key][j].replace(toMatch,newKeys[i])
-					}
-				}
-			}
-		}
+	String.prototype.count=function(s1) { 
+	    return (this.length - this.replace(new RegExp(s1,"g"), '').length) / s1.length;
 	}
-	// function insertNewSymbols(cfg) {
-	// 	addedSymbolsList = []
-	// 	for(var key in cfg) {
-	// 		console.log(cfg[key])
-	// 		listOfValues = cfg[key]
-	// 		for(var i = 0 ; i < listOfValues.length; i++) {
-	// 			if(listOfValues[i].length > 2) {
-	// 				newValue = [listOfValues[i].slice(-2)][0]
-	// 				if(searchStringInArray(newValue,addedSymbolsList, true) === -1) {
-	// 					// console.log("LENGTH GREATER THAN 2")
-	// 					cfg[ "A" + currentReplace ] = [ newValue ]
-	// 					addedSymbolsList.push(newValue)
-	// 					currentReplace = currentReplace + 1
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-	// }
+
+	function locations(substring,string){
+	  var a=[],i=-1;
+	  while((i=string.indexOf(substring,i+1)) >= 0) a.push(i);
+	  return a;
+	}
+	function spliceSlice(str, index, count) {
+	  // We cannot pass negative indexes dirrectly to the 2nd slicing operation.
+	  if (index < 0) {
+	    index = str.length + index;
+	    if (index < 0) {
+	      index = 0;
+	    }
+	  }
+
+	  return str.slice(0, index) + str.slice(index + count);
+	}
 
 	function removeEpsilons(cfg) {
 		//console.log(cfg);
 		var key = getKeysByValue(cfg, "e")[0];
 		// console.log(key);
 		removeFromArray(cfg[key], "e");
-		var toAdd = getKeysByValue(cfg, key);
 
-		
+		removedKeys.push(key);
 
-		for(var i = 0 ; i < toAdd.length; i++) {
-			cfg[toAdd[i]] = searchAllStringAndReplace(key,cfg[toAdd[i]], toAdd[i]);
+		tempToAdd = {}
+
+		for(var currKey in cfg ) {
+			if(currKey == key) 
+				continue
+			// console.log(cfg[currKey]);
+			for(var i = 0; i < cfg[currKey].length; i++) {
+				value = cfg[currKey][i];
+				// console.log(value);
+				keyLocations = locations(key, value);
+				// console.log(keyLocations);
+				if(keyLocations.length > 0) {
+					if(value.length > 1) {
+						// console.log("TEST " + value);
+						locationsToIgnore = combine(keyLocations,1);
+						for(var j = 0 ; j < locationsToIgnore.length ; j++) {
+							temp = value;
+							for(var k = 0 ; k < locationsToIgnore[j].length ; k++) {
+								temp = spliceSlice(temp,locationsToIgnore[j][k] - k, 1,0);
+							}
+							if(tempToAdd[currKey])
+								tempToAdd[currKey].push(temp);
+							else
+								tempToAdd[currKey] = [temp];
+						}
+					}
+					else {
+						if(!(currKey in removedKeys)) {
+							if(tempToAdd[currKey])
+								tempToAdd[currKey].push("e")
+							else
+								tempToAdd[currKey] = ["e"]
+						}
+					}
+				}
+			}
 		}
-		// console.log(cfg);
-		//var test = cfg.getKeyByValue("e");
+		for (var attrname in tempToAdd) { cfg[attrname] = cfg[attrname].concat(tempToAdd[attrname]); }
+
 	}
-	// function searchAndReplace(str, strArray,cfg) {
-	// 	for (var i=0; i<strArray.length; i++) {
-	// 		if(strArray[i] == str) {
-	// 			removeFromArray(strArray[i],str);
-	// 			strArray[i].push(cfg[str]);
-	// 		}
-	// 	}
-	// 	return strArray;
-	// }
+
+	var combine = function(a, min) {
+	    var fn = function(n, src, got, all) {
+	        if (n == 0) {
+	            if (got.length > 0) {
+	                all[all.length] = got;
+	            }
+	            return;
+	        }
+	        for (var j = 0; j < src.length; j++) {
+	            fn(n - 1, src.slice(j + 1), got.concat([src[j]]), all);
+	        }
+	        return;
+	    }
+	    var all = [];
+	    for (var i = min; i < a.length; i++) {
+	        fn(i, a, [], all);
+	    }
+	    all.push(a);
+	    return all;
+	}
 
 	//string permutation
 
@@ -271,6 +320,7 @@ $(document).ready(function(){
 	function removeFromArray(object, value ) {
 		return object.splice(object.indexOf(value), 1);
 	}
+
 	function removeFromArrayAndReplace(object, value, array ) {
 		return object.splice(object.indexOf(value), 1,array);
 	}
