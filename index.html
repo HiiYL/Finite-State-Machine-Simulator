@@ -98,6 +98,9 @@
     // a*(a|b*)(a|b|c|b|d)*
   })
 
+  // for NFA DFA Conversion
+  var powerSets = [];
+
 
   function checkInput() {
     var inputRegex = $("#txtInputExp").val();
@@ -115,7 +118,7 @@
   }
   
   function checkGrammar(){
-    
+    powerSets = [];
     //get user input
     var text = $('textarea#inputCFG').val();
 
@@ -127,7 +130,6 @@
     }
     var powerSetNumber = Math.pow(2,numLines);
     var states = []; //number of states should be equal to powerSetNumber
-    var powerSets = new Array();
     var myChar = "A";
     // create all the new states of DFA
     for (i = 0; i < powerSetNumber; i++){
@@ -138,35 +140,37 @@
 
     var tempNumber = powerSetNumber;
     
-    // powerSets.push("Z");
-    var powerSets = [];
+    
     powerSets.push("Z");
-   
+  
     var statesInString = states.join('');
-    statesInString = statesInString.substring(0, numLines); //take the NFA string only
-    string_recursive(powerSets,"",statesInString);
-    //alert(powerSets[0]);
-    // for(i = 0; i<powerSetNumber ; i++){
-    //     alert(powerSets[i]);
-    // }
-
+    statesInString = statesInString.substring(0, numLines); //take the old states only
+    
+    string_recursive("",statesInString);
+    
+    // provide 0,1 input and output
+    
   }
 
-  function string_recursive($powerSetNumber, $output, $leftOvers){
+  function string_recursive($output, $leftOvers){
       
       if($leftOvers.length == 0 && $output!="")
       {
-          
-          $powerSetNumber.push($output);
-          alert("pong");
-         
+        // alert($output);
+          powerSets.push($output); 
+          $("#output").text(powerSets);
       }
 
       else
       {
+<<<<<<< HEAD
+          string_recursive($output + $leftOvers.charAt(0), $leftOvers.substring(1, $leftOvers.length));
+          string_recursive($output, $leftOvers.substring(1, $leftOvers.length));
+=======
           string_recursive($powerSetNumber ,$output + $leftOvers.charAt(0), $leftOvers.substring(1, $leftOvers.length));
           string_recursive($powerSetNumber ,$output, $leftOvers.substring(1, $leftOvers.length));
+>>>>>>> e3abdc4dbd2443cf71cd629e10b647ad9fe3dd31
       }
-      
+      // return powerSets;
   }
 </script>
