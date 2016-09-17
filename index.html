@@ -68,6 +68,16 @@
       <textarea name="input" id="inputCFG" cols="20" rows="10" placeholder="Use 'e' as Epsilon" class="form-control"></textarea>
       
       <button onclick="checkGrammar()" id="convert" class="btn btn-default">Convert</button>
+
+      <table style="width:100%">
+        <tr>
+          <th>New State</th>
+          <th>Power Set</th>
+          <th>0</th>
+          <th>1</th>
+        </tr>
+        
+      </table>
       
     </div>
 
@@ -87,6 +97,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </body>
 </html>
+
 <script>
   var equationsObj = [];
   $("#txtInputExp").on('input',function(){
@@ -100,7 +111,7 @@
 
   // for NFA DFA Conversion
   var powerSets = [];
-
+  var powerSetsNumberGlobal = 0;
 
   function checkInput() {
     var inputRegex = $("#txtInputExp").val();
@@ -129,48 +140,58 @@
         numLines = numLines + 1;
     }
     var powerSetNumber = Math.pow(2,numLines);
+    powerSetsNumberGlobal = powerSetNumber;
     var states = []; //number of states should be equal to powerSetNumber
     var myChar = "A";
-    // create all the new states of DFA
+
+    /****Create Table****/
+    var tableOutput = document.createElement("tabulatedResults");
+    /********************/
+
+    /***create all the new states of DFA***/
     for (i = 0; i < powerSetNumber; i++){
         states[i] = String.fromCharCode(myChar.charCodeAt(0) + i);        
     }
+    /**************************************/
 
-    // create power sets, Q
-
-    var tempNumber = powerSetNumber;
-    
-    
+    /***create power sets, Q***/
     powerSets.push("Z");
-  
     var statesInString = states.join('');
     statesInString = statesInString.substring(0, numLines); //take the old states only
     
     string_recursive("",statesInString);
-    
-    // provide 0,1 input and output
+   
+    /***************************/
+    alert("12123");
+
+    /*** provide 0,1 input and output ***/
+    //variables i can use: powersets, states
+    for (i = 0; i < lines.length; i++) {
+        alert(i);
+    }
+
+    /************************************/
     
   }
 
   function string_recursive($output, $leftOvers){
-      
+      alert("I am recursively Running :(");
       if($leftOvers.length == 0 && $output!="")
       {
-        // alert($output);
           powerSets.push($output); 
-          $("#output").text(powerSets);
+          // $("#output").text(powerSets);
+          // console.log(powerSets.length);
+          // console.log(tempPowerSetNumber);
       }
-
+      else if(powerSets.length == powerSetsNumberGlobal)
+      {
+          return;
+      }
       else
       {
-<<<<<<< HEAD
           string_recursive($output + $leftOvers.charAt(0), $leftOvers.substring(1, $leftOvers.length));
           string_recursive($output, $leftOvers.substring(1, $leftOvers.length));
-=======
-          string_recursive($powerSetNumber ,$output + $leftOvers.charAt(0), $leftOvers.substring(1, $leftOvers.length));
-          string_recursive($powerSetNumber ,$output, $leftOvers.substring(1, $leftOvers.length));
->>>>>>> e3abdc4dbd2443cf71cd629e10b647ad9fe3dd31
       }
-      // return powerSets;
+      
   }
 </script>
