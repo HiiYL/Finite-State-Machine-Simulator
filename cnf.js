@@ -10,9 +10,12 @@ $(document).ready(function(){
 	S => aXbX
 	X => aY | bY | e
 	Y => X | c
+
+	var removedKeys = []
 	function checkInput(inputStr) {
 		currentReplace = 1;
 		var cfg = CFGParse(inputStr);
+		removedKeys = []
 		// console.log(getKeysByValue(cfg, 'S'));
 
 		if(cfg !== undefined) {
@@ -22,26 +25,24 @@ $(document).ready(function(){
 			}
 
 			i = 0
-			// while(getKeysByValue(cfg, 'e').length > 0) {
-			//   if(i > 20) {
-			//   	break
-			//   }
-		    removeEpsilons(cfg);
+			while(getKeysByValue(cfg, 'e').length > 0) {
+			  if(i > 20) {
+			  	break
+			  }
+		      removeEpsilons(cfg);
+			  i++;
+			}
+			console.log(cfg);
 
-		    console.log(cfg);
+			
 
-		    removeEpsilons(cfg);
 
-		    console.log(cfg);
 
-			//   i++;
-			// }
+			removeUnitRules(cfg);
+			console.log(cfg);
 
-			// removeUnitRules(cfg);
-			// console.log(cfg);
-
-			// insertNewSymbols(cfg);
-			// console.log(cfg);
+			insertNewSymbols(cfg);
+			console.log(cfg);
 
 			$("#outputCNF").html(display(cfg));
 		}
@@ -174,25 +175,27 @@ $(document).ready(function(){
 		// console.log(key);
 		removeFromArray(cfg[key], "e");
 
+		removedKeys.push(key);
+
 		tempToAdd = {}
 
 		for(var currKey in cfg ) {
 			if(currKey == key) 
 				continue
-			console.log(cfg[currKey]);
+			// console.log(cfg[currKey]);
 			for(var i = 0; i < cfg[currKey].length; i++) {
 				value = cfg[currKey][i];
-				console.log(value);
+				// console.log(value);
 				keyLocations = locations(key, value);
-				console.log(keyLocations);
+				// console.log(keyLocations);
 				if(keyLocations.length > 0) {
 					if(value.length > 1) {
-						console.log("TEST " + value);
+						// console.log("TEST " + value);
 						locationsToIgnore = combine(keyLocations,1);
-						for(var i = 0 ; i < locationsToIgnore.length ; i++) {
+						for(var j = 0 ; j < locationsToIgnore.length ; j++) {
 							temp = value;
-							for(var j = 0 ; j < locationsToIgnore[i].length ; j++) {
-								temp = spliceSlice(temp,locationsToIgnore[i][j] - j, 1,0);
+							for(var k = 0 ; k < locationsToIgnore[j].length ; k++) {
+								temp = spliceSlice(temp,locationsToIgnore[j][k] - k, 1,0);
 							}
 							if(tempToAdd[currKey])
 								tempToAdd[currKey].push(temp);
@@ -201,10 +204,12 @@ $(document).ready(function(){
 						}
 					}
 					else {
-						if(tempToAdd[currKey])
-							tempToAdd[currKey].push("e")
-						else
-							tempToAdd[currKey] = ["e"]
+						if(!(currKey in removedKeys)) {
+							if(tempToAdd[currKey])
+								tempToAdd[currKey].push("e")
+							else
+								tempToAdd[currKey] = ["e"]
+						}
 					}
 				}
 			}
