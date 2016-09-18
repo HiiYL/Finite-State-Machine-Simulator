@@ -34,7 +34,7 @@ $(document).ready(function(){
 			}
 			console.log(cfg);
 
-			
+
 
 
 
@@ -53,6 +53,9 @@ $(document).ready(function(){
 			newCFGValues = cfg[key]
 			for(var i = 0 ; i < cfg[key].length; i++) {
 				value = cfg[key][i];
+				if(value == key) {
+					removeFromArray(newCFGValues, value);
+				}else
 				if(value.length == 1 && (value == value.toUpperCase())) {
 					// console.log(newCFGValues);
 					removeFromArrayAndReplace(newCFGValues, value, cfg[value]);
@@ -63,37 +66,87 @@ $(document).ready(function(){
 		}
 	}
 
+	function recurseAddSymbols(value, auxDict) {
+		if(value.length >= 2) {
+			newSymbol = getUnusedKey(cfg, auxDict);
+			auxDict[newSymbol] = [value.slice(1)];
+			value = value.replace(value.slice(1), newSymbol)
+
+		}
+	}
+
 	function insertNewSymbols(cfg) {
 		auxDict = {}
+
 		for(var key in cfg) {
 			for(var i = 0 ; i < cfg[key].length; i++) {
 				value = cfg[key][i];
-				if(value.length > 2) {
-					currKey = getKeysByValue(auxDict, value.slice(-2));
-					if(currKey.length == 0 ) {
-						newSymbol = getUnusedKey(cfg, auxDict);
-						auxDict[newSymbol] = [value.slice(-2)];
-						currKey = newSymbol;
-					}
-					value = value.replace(value.slice(-2), currKey)
-					cfg[key][i] = value
-				}else if(value.length == 2) {
-					if (isUpperCase(value[0]) && isUpperCase(value[1])) {
-						continue;
-					}else if(!isUpperCase(value[0]) && isUpperCase(value[1])) {
-						currKey = getKeysByValue(auxDict, value[0]);
-						if(currKey.length == 0 ) {
-							newSymbol = getUnusedKey(cfg, auxDict);
-							auxDict[newSymbol] = [ value[0] ];
-							currKey = newSymbol;
+				if(value.length > 1) 
+				{
+					value = value.split("");
+					for(var j = 0 ; j < value.length; j++) 
+					{
+						if(value[j] == value[j].toLowerCase()) 
+						{
+							// console.log("lower case!");
+							upperCaseRepresentation = value[j].toUpperCase()
+							if(cfg[upperCaseRepresentation]) 
+							{
+								// console.log("Has CFG representation!");
+
+								if(cfg[upperCaseRepresentation].length == 1 && cfg[upperCaseRepresentation][0] == value[j] ) 
+								{
+									// console.log("Correct CFG value");
+									value[j] = value[j].toUpperCase()
+								}
+								else
+								{
+									currKey = getKeysByValue(auxDict, value[j], exact=true);
+									if(currKey.length == 0 ) {
+										newSymbol = getUnusedKey(cfg, auxDict);
+										auxDict[newSymbol] = [ value[j] ];
+										currKey = newSymbol;
+									}
+									value[j] = currKey;
+								}
+							}
+							else 
+							{
+								cfg[upperCaseRepresentation] = [ value[j] ]
+								value[j] = value[j].toUpperCase()
+								console.log(value)
+							}
 						}
-						value = value.replace(value[0], currKey)
-						cfg[key][i] = value
 					}
+					value = value.join("");
+					cfg[key][i] = value;
 				}
 			}
 		}
 		for (var attrname in auxDict) { cfg[attrname] = auxDict[attrname]; }
+
+		var done = false;
+		while(!done) {
+			done = true
+			for(var key in cfg) {
+				for(var i = 0 ; i < cfg[key].length; i++) {
+					value = cfg[key][i];
+					if(value.length > 2) {
+						currKey = getKeysByValue(auxDict, value.slice(-2));
+						if(currKey.length == 0 ) {
+							newSymbol = getUnusedKey(cfg, auxDict);
+							auxDict[newSymbol] = [value.slice(-2)];
+							currKey = newSymbol;
+						}
+						value = value.replace(value.slice(-2), currKey)
+						cfg[key][i] = value
+						done = false
+					}
+				}
+			}
+
+			for (var attrname in auxDict) { cfg[attrname] = auxDict[attrname]; }
+		}
 	}
 	function isUpperCase(char) {
 		return (char == char.toUpperCase())
