@@ -34,10 +34,6 @@ $(document).ready(function(){
 			}
 			console.log(cfg);
 
-
-
-
-
 			removeUnitRules(cfg);
 			console.log(cfg);
 
@@ -292,65 +288,6 @@ $(document).ready(function(){
 	    return all;
 	}
 
-	//string permutation
-
-	//====================================================
-	function getPermutations(str){
-	    //Enclosed data to be used by the internal recursive function permutate():
-	    var permutations = [],  //generated permutations stored here
-	        nextWord = [],      //next word builds up in here     
-	        chars = []          //collection for each recursion level
-	    ;
-	    //---------------------
-	    //split words or numbers into an array of characters
-	    if (typeof str === 'string') chars = str.split(''); 
-	    else if (typeof str === 'number') {
-	      str = str + ""; //convert number to string
-	      chars = str.split('');//convert string into char array
-	    }
-	    //============TWO Declaratives========
-	    permutate(chars);
-	    return permutations;
-	    //===========UNDER THE HOOD===========
-	    function permutate(chars){ //recursive: generates the permutations
-	        if(chars.length === 0)permutations.push(nextWord.join(''));            
-	        for (var i=0; i < chars.length; i++){
-	            chars.push(chars.shift());  //rotate the characters
-	            nextWord.push(chars[0]);    //use the first char in the array            
-	            permutate(chars.slice(1));  //Recurse: array-less-one-char
-	            nextWord.pop();             //clear for nextWord (multiple pops)
-	        }
-	    }
-	    //--------------------------------
-	}//==============END of getPermutations(str)=============
-
-	function searchAllStringAndReplace(str, strArray, selfKey) {
-		for (var i=0; i<strArray.length; i++) {
-	        if (strArray[i].match(str)) {
-	        	if(strArray[i] == str) {
-	        		strArray.push("e");
-	        	}else {
-	        		// console.log(strArray[i]);
-	        		filteredSymbol = strArray[i].replace(str,'');
-	        		if(filteredSymbol.length > 1) {
-	        			permutedSymbols = getPermutations(filteredSymbol);
-	        			// console.log('----------------------');
-	        			// console.log(strArray);
-	        			// console.log(permutedSymbols);
-	        			strArray = strArray.concat(permutedSymbols);
-	        			// console.log(strArray);
-	        			// console.log('----------------------');
-	        		}else {
-	        			if(filteredSymbol != selfKey)
-	        				strArray.push(filteredSymbol);
-	        		}
-					
-	        	}
-	        }
-	    }
-	    return strArray;
-
-	}
 	function searchStringInArray (str, strArray,exact) {
 		// console.log(exact);
 	    for (var j=0; j<strArray.length; j++) {
@@ -368,7 +305,6 @@ $(document).ready(function(){
 			}
 		}
 		return keys;
-		// return Object.keys(object).filter(function(key) { return (searchStringInArray(value, object[key]) !== -1); });
 	}
 	function removeFromArray(object, value ) {
 		return object.splice(object.indexOf(value), 1);
@@ -376,16 +312,6 @@ $(document).ready(function(){
 
 	function removeFromArrayAndReplace(object, value, array ) {
 		return object.splice(object.indexOf(value), 1,array);
-	}
-
-	var filtered_keys = function(obj, filter) {
-	  var key, keys = [];
-	  for (key in obj) {
-	    if (obj.hasOwnProperty(key) && filter.test(key)) {
-	      keys.push(key);
-	    }
-	  }
-	  return keys;
 	}
 
 });
