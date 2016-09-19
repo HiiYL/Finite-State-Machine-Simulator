@@ -1,10 +1,8 @@
 $(document).ready(function(){
-	var currentReplace = 1;
 	// $("#inputCFGtoCNF").val("S => ASA | aB \nA => B | S  \nB => b | e");
 	$("#inputCFGtoCNF").val("S => aXbX \nX => aY | bY | e \nY => X | c");
 	$("#inputCFGtoCNF").on('input',function(){
 		checkInput(this.value);
-		// a*(a|b*)(a|b|c|b|d)*
 	})
 
 	S => aXbX
@@ -13,11 +11,10 @@ $(document).ready(function(){
 
 	var removedKeys = []
 	function checkInput(inputStr) {
-		currentReplace = 1;
 		var cfg = CFGParse(inputStr);
-		removedKeys = []
-		// console.log(getKeysByValue(cfg, 'S'));
 
+		//Keeps track of symbols which have had epsilon removed
+		removedKeys = []
 		if(cfg !== undefined) {
 			// console.log(cfg);
 			if(getKeysByValue(cfg, 'S').length > 0) {
@@ -32,13 +29,14 @@ $(document).ready(function(){
 		      removeEpsilons(cfg);
 			  i++;
 			}
-			console.log(cfg);
+			// console.log(cfg);
+			$("#outputCNFStep1").html(display(cfg));
 
 			removeUnitRules(cfg);
 			console.log(cfg);
 
 			insertNewSymbols(cfg);
-			console.log(cfg);
+			$("#outputCNFStep2").html(display(cfg));
 
 			$("#outputCNF").html(display(cfg));
 		}
@@ -59,15 +57,6 @@ $(document).ready(function(){
 				}
 			}
 			cfg[key] = newCFGValues
-		}
-	}
-
-	function recurseAddSymbols(value, auxDict) {
-		if(value.length >= 2) {
-			newSymbol = getUnusedKey(cfg, auxDict);
-			auxDict[newSymbol] = [value.slice(1)];
-			value = value.replace(value.slice(1), newSymbol)
-
 		}
 	}
 
