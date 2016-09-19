@@ -34,10 +34,6 @@ $(document).ready(function(){
 			}
 			console.log(cfg);
 
-			
-
-
-
 			removeUnitRules(cfg);
 			console.log(cfg);
 
@@ -53,6 +49,9 @@ $(document).ready(function(){
 			newCFGValues = cfg[key]
 			for(var i = 0 ; i < cfg[key].length; i++) {
 				value = cfg[key][i];
+				if(value == key) {
+					removeFromArray(newCFGValues, value);
+				}else
 				if(value.length == 1 && (value == value.toUpperCase())) {
 					// console.log(newCFGValues);
 					removeFromArrayAndReplace(newCFGValues, value, cfg[value]);
@@ -63,37 +62,87 @@ $(document).ready(function(){
 		}
 	}
 
+	function recurseAddSymbols(value, auxDict) {
+		if(value.length >= 2) {
+			newSymbol = getUnusedKey(cfg, auxDict);
+			auxDict[newSymbol] = [value.slice(1)];
+			value = value.replace(value.slice(1), newSymbol)
+
+		}
+	}
+
 	function insertNewSymbols(cfg) {
 		auxDict = {}
+
 		for(var key in cfg) {
 			for(var i = 0 ; i < cfg[key].length; i++) {
 				value = cfg[key][i];
-				if(value.length > 2) {
-					currKey = getKeysByValue(auxDict, value.slice(-2));
-					if(currKey.length == 0 ) {
-						newSymbol = getUnusedKey(cfg, auxDict);
-						auxDict[newSymbol] = [value.slice(-2)];
-						currKey = newSymbol;
-					}
-					value = value.replace(value.slice(-2), currKey)
-					cfg[key][i] = value
-				}else if(value.length == 2) {
-					if (isUpperCase(value[0]) && isUpperCase(value[1])) {
-						continue;
-					}else if(!isUpperCase(value[0]) && isUpperCase(value[1])) {
-						currKey = getKeysByValue(auxDict, value[0]);
-						if(currKey.length == 0 ) {
-							newSymbol = getUnusedKey(cfg, auxDict);
-							auxDict[newSymbol] = [ value[0] ];
-							currKey = newSymbol;
+				if(value.length > 1) 
+				{
+					value = value.split("");
+					for(var j = 0 ; j < value.length; j++) 
+					{
+						if(value[j] == value[j].toLowerCase()) 
+						{
+							// console.log("lower case!");
+							upperCaseRepresentation = value[j].toUpperCase()
+							if(cfg[upperCaseRepresentation]) 
+							{
+								// console.log("Has CFG representation!");
+
+								if(cfg[upperCaseRepresentation].length == 1 && cfg[upperCaseRepresentation][0] == value[j] ) 
+								{
+									// console.log("Correct CFG value");
+									value[j] = value[j].toUpperCase()
+								}
+								else
+								{
+									currKey = getKeysByValue(auxDict, value[j], exact=true);
+									if(currKey.length == 0 ) {
+										newSymbol = getUnusedKey(cfg, auxDict);
+										auxDict[newSymbol] = [ value[j] ];
+										currKey = newSymbol;
+									}
+									value[j] = currKey;
+								}
+							}
+							else 
+							{
+								cfg[upperCaseRepresentation] = [ value[j] ]
+								value[j] = value[j].toUpperCase()
+								console.log(value)
+							}
 						}
-						value = value.replace(value[0], currKey)
-						cfg[key][i] = value
 					}
+					value = value.join("");
+					cfg[key][i] = value;
 				}
 			}
 		}
 		for (var attrname in auxDict) { cfg[attrname] = auxDict[attrname]; }
+
+		var done = false;
+		while(!done) {
+			done = true
+			for(var key in cfg) {
+				for(var i = 0 ; i < cfg[key].length; i++) {
+					value = cfg[key][i];
+					if(value.length > 2) {
+						currKey = getKeysByValue(auxDict, value.slice(-2));
+						if(currKey.length == 0 ) {
+							newSymbol = getUnusedKey(cfg, auxDict);
+							auxDict[newSymbol] = [value.slice(-2)];
+							currKey = newSymbol;
+						}
+						value = value.replace(value.slice(-2), currKey)
+						cfg[key][i] = value
+						done = false
+					}
+				}
+			}
+
+			for (var attrname in auxDict) { cfg[attrname] = auxDict[attrname]; }
+		}
 	}
 	function isUpperCase(char) {
 		return (char == char.toUpperCase())
@@ -239,65 +288,6 @@ $(document).ready(function(){
 	    return all;
 	}
 
-	//string permutation
-
-	//====================================================
-	function getPermutations(str){
-	    //Enclosed data to be used by the internal recursive function permutate():
-	    var permutations = [],  //generated permutations stored here
-	        nextWord = [],      //next word builds up in here     
-	        chars = []          //collection for each recursion level
-	    ;
-	    //---------------------
-	    //split words or numbers into an array of characters
-	    if (typeof str === 'string') chars = str.split(''); 
-	    else if (typeof str === 'number') {
-	      str = str + ""; //convert number to string
-	      chars = str.split('');//convert string into char array
-	    }
-	    //============TWO Declaratives========
-	    permutate(chars);
-	    return permutations;
-	    //===========UNDER THE HOOD===========
-	    function permutate(chars){ //recursive: generates the permutations
-	        if(chars.length === 0)permutations.push(nextWord.join(''));            
-	        for (var i=0; i < chars.length; i++){
-	            chars.push(chars.shift());  //rotate the characters
-	            nextWord.push(chars[0]);    //use the first char in the array            
-	            permutate(chars.slice(1));  //Recurse: array-less-one-char
-	            nextWord.pop();             //clear for nextWord (multiple pops)
-	        }
-	    }
-	    //--------------------------------
-	}//==============END of getPermutations(str)=============
-
-	function searchAllStringAndReplace(str, strArray, selfKey) {
-		for (var i=0; i<strArray.length; i++) {
-	        if (strArray[i].match(str)) {
-	        	if(strArray[i] == str) {
-	        		strArray.push("e");
-	        	}else {
-	        		// console.log(strArray[i]);
-	        		filteredSymbol = strArray[i].replace(str,'');
-	        		if(filteredSymbol.length > 1) {
-	        			permutedSymbols = getPermutations(filteredSymbol);
-	        			// console.log('----------------------');
-	        			// console.log(strArray);
-	        			// console.log(permutedSymbols);
-	        			strArray = strArray.concat(permutedSymbols);
-	        			// console.log(strArray);
-	        			// console.log('----------------------');
-	        		}else {
-	        			if(filteredSymbol != selfKey)
-	        				strArray.push(filteredSymbol);
-	        		}
-					
-	        	}
-	        }
-	    }
-	    return strArray;
-
-	}
 	function searchStringInArray (str, strArray,exact) {
 		// console.log(exact);
 	    for (var j=0; j<strArray.length; j++) {
@@ -315,7 +305,6 @@ $(document).ready(function(){
 			}
 		}
 		return keys;
-		// return Object.keys(object).filter(function(key) { return (searchStringInArray(value, object[key]) !== -1); });
 	}
 	function removeFromArray(object, value ) {
 		return object.splice(object.indexOf(value), 1);
@@ -323,16 +312,6 @@ $(document).ready(function(){
 
 	function removeFromArrayAndReplace(object, value, array ) {
 		return object.splice(object.indexOf(value), 1,array);
-	}
-
-	var filtered_keys = function(obj, filter) {
-	  var key, keys = [];
-	  for (key in obj) {
-	    if (obj.hasOwnProperty(key) && filter.test(key)) {
-	      keys.push(key);
-	    }
-	  }
-	  return keys;
 	}
 
 });
