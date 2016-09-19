@@ -74,10 +74,7 @@
       </table>
       
     </div>
-    <div class="outputTable">
-      <h3>NFA->DFA Conversion</h3>
-      <p id="output">Null</p>
-    </div>
+
 		<div class="container">
 			<h3>CFG into Chomsky normal form (CNF).</h3>
 			<textarea name="input" id="inputCFGtoCNF" cols="20" rows="10" placeholder="Use 'e' as Epsilon" class="form-control"></textarea>
@@ -115,8 +112,9 @@
   margin: -10px;
 }
 </style>
+
 <script>
-$(document).ready(function() {
+// $(document).ready(function() {
   var equationsObj = [];
   // $("#txtInputExp").on('input',function(){
   //   checkInput();
@@ -131,7 +129,7 @@ $(document).ready(function() {
   $("#inputCFG").val("A => 0A|0B \nB => 0A|1C \nC => 0C");
   $("#inputCFG").on('input',function(){
     checkGrammar(this.value);
-  })
+  });
 
   function checkInput() {
     var inputRegex = $("#txtInputExp").val();
@@ -148,7 +146,8 @@ $(document).ready(function() {
     }
   }
   
-  function checkGrammar(){
+  function checkGrammar()
+  {
     powerSets = [];
     //get user input
     var text = $('textarea#inputCFG').val();
@@ -219,33 +218,9 @@ $(document).ready(function() {
         
     }
 
-    /************************************/
-    // alert(states[0]);
-
-    /********Create JSON **********/
-    
-    // var tempZeroArray = zeroArray.toString();
-    // tempZeroArray = tempZeroArray.replace(/,/g,""); //turning the array to strings, so that odd number is key, even number is the value. 
-
-    // for(i = 0; i < tempZeroArray.length; i++)
-    // {
-    //   for(j = 0; j < states.length; j++)
-    //   {
-    //     if(tempZeroArray[i].includes(states[j]) && i%2===0)
-    //     {
-    //       alert(tempZeroArray[i+1]);
-          
-    //     }
-    //   }
-    // }
-    /******************************/
-
-
     /****Create Table****/
     var tableOutput = document.getElementById("finalTable");
     /********************/
-
-
 
     /**** Visualizing in a table form *****/
     // Z state
@@ -276,7 +251,10 @@ $(document).ready(function() {
     }
     // 0-1 input for other states
     var tempZeroArray = zeroArray.toString();
-    tempZeroArray = tempZeroArray.replace(/,/g,""); //turning the array to strings, so that odd number is key, even number is the value. 
+    tempZeroArray = tempZeroArray.replace(/,/g, ""); //turning the array to strings, so that odd number is key, even number is the value. 
+    var tempOneArray = oneArray.toString();
+    tempOneArray = tempOneArray.replace(/,/g, "");
+
     for(i = 0; i < tempZeroArray.length; i++)
     {
       for(j = 0; j < states.length; j++)
@@ -299,11 +277,37 @@ $(document).ready(function() {
         }
       }
     }
-
-
-    console.log(zeroArray);
-    /**************************************/
+  
+    //for array with input 1
+    for(i = 0; i < tempOneArray.length; i++)
+    {
+      for(j = 0; j < states.length; j++)
+      {
+        
+        if(tempOneArray[i].includes(powerSets[j]) && i%2===0)
+        {
+          var tempCell = document.getElementById("finalTable").rows[j+2].cells; // +2 becuz first 2 rows are pre-initialized.
+          if(tempCell[3].innerHTML == "Empty")
+          {
+            tempCell[3].innerHTML = tempOneArray[i+1];
+          }
+          else
+          {
+            var tempText = tempCell[3].innerHTML;
+            tempText = tempText.concat(tempOneArray[i+1]);
+            tempCell[3].innerHTML = tempText;
+          }
+          
+        }
+      }      
+    }
   }
+
+ 
+
+  
+    /**************************************/
+  
 
   function string_recursive($output, $leftOvers){
       if($leftOvers.length == 0 && $output!="")
@@ -322,7 +326,5 @@ $(document).ready(function() {
       }
       
   }
-
-});
 
 </script>
