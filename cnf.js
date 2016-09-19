@@ -1,6 +1,6 @@
 $(document).ready(function(){
-	// $("#inputCFGtoCNF").val("S => ASA | aB \nA => B | S  \nB => b | e");
-	$("#inputCFGtoCNF").val("S => aXbX \nX => aY | bY | e \nY => X | c");
+	$("#inputCFGtoCNF").val("S => ASA | aB \nA => B | S  \nB => b | e");
+	// $("#inputCFGtoCNF").val("S => aXbX \nX => aY | bY | e \nY => X | c");
 	$("#inputCFGtoCNF").on('input',function(){
 		checkInput(this.value);
 	})
@@ -41,6 +41,79 @@ $(document).ready(function(){
 			$("#outputCNF").html(display(cfg));
 		}
 
+	}
+	function insertStartSymbol(cfg) {
+		cfg['S0'] = ['S']
+		return cfg
+	};
+	function CFGParse(CFG) {
+		var lines = CFG.split('\n');
+
+		if(lines.length > 1) {
+			var cfg = {}
+			try{
+				for(var i = 0;i < lines.length;i++){
+					var split = lines[i].split("=>");
+						var left = split[0].trim();
+						var right = split[1].split("|").map(function(obj) { return obj.trim(); }).filter(Boolean);
+						//console.log(left + " " + right);
+						cfg[left] = right;
+				}
+				//console.log(cfg);
+				//console.log("-----------------");
+				return cfg;
+			}catch(err) {
+				console.log("Invalid CFG")
+			}
+		}
+	}
+
+	function removeEpsilons(cfg) {
+		//console.log(cfg);
+		var key = getKeysByValue(cfg, "e")[0];
+		// console.log(key);
+		removeFromArray(cfg[key], "e");
+
+		removedKeys.push(key);
+
+		tempToAdd = {}
+
+		for(var currKey in cfg ) {
+			if(currKey == key) 
+				continue
+			// console.log(cfg[currKey]);
+			for(var i = 0; i < cfg[currKey].length; i++) {
+				value = cfg[currKey][i];
+				// console.log(value);
+				keyLocations = locations(key, value);
+				// console.log(keyLocations);
+				if(keyLocations.length > 0) {
+					if(value.length > 1) {
+						// console.log("TEST " + value);
+						locationsToIgnore = combine(keyLocations,1);
+						for(var j = 0 ; j < locationsToIgnore.length ; j++) {
+							temp = value;
+							for(var k = 0 ; k < locationsToIgnore[j].length ; k++) {
+								temp = spliceSlice(temp,locationsToIgnore[j][k] - k, 1,0);
+							}
+							if(tempToAdd[currKey])
+								tempToAdd[currKey].push(temp);
+							else
+								tempToAdd[currKey] = [temp];
+						}
+					}
+					else {
+						if(!(currKey in removedKeys)) {
+							if(tempToAdd[currKey])
+								tempToAdd[currKey].push("e")
+							else
+								tempToAdd[currKey] = ["e"]
+						}
+					}
+				}
+			}
+		}
+		for (var attrname in tempToAdd) { cfg[attrname] = cfg[attrname].concat(tempToAdd[attrname]); }
 	}
 	function removeUnitRules(cfg) {
 		for(var key in cfg) {
@@ -160,31 +233,6 @@ $(document).ready(function(){
 	S => ASA | aB
 	A => B | S 
 	B => b | e
-	function CFGParse(CFG) {
-		var lines = CFG.split('\n');
-
-		if(lines.length > 1) {
-			var cfg = {}
-			try{
-				for(var i = 0;i < lines.length;i++){
-					var split = lines[i].split("=>");
-						var left = split[0].trim();
-						var right = split[1].split("|").map(function(obj) { return obj.trim(); }).filter(Boolean);
-						//console.log(left + " " + right);
-						cfg[left] = right;
-				}
-				//console.log(cfg);
-				//console.log("-----------------");
-				return cfg;
-			}catch(err) {
-				console.log("Invalid CFG")
-			}
-		}
-	}
-	function insertStartSymbol(cfg) {
-		cfg['S0'] = ['S']
-		return cfg
-	};
 
 	String.prototype.count=function(s1) { 
 	    return (this.length - this.replace(new RegExp(s1,"g"), '').length) / s1.length;
@@ -207,54 +255,7 @@ $(document).ready(function(){
 	  return str.slice(0, index) + str.slice(index + count);
 	}
 
-	function removeEpsilons(cfg) {
-		//console.log(cfg);
-		var key = getKeysByValue(cfg, "e")[0];
-		// console.log(key);
-		removeFromArray(cfg[key], "e");
 
-		removedKeys.push(key);
-
-		tempToAdd = {}
-
-		for(var currKey in cfg ) {
-			if(currKey == key) 
-				continue
-			// console.log(cfg[currKey]);
-			for(var i = 0; i < cfg[currKey].length; i++) {
-				value = cfg[currKey][i];
-				// console.log(value);
-				keyLocations = locations(key, value);
-				// console.log(keyLocations);
-				if(keyLocations.length > 0) {
-					if(value.length > 1) {
-						// console.log("TEST " + value);
-						locationsToIgnore = combine(keyLocations,1);
-						for(var j = 0 ; j < locationsToIgnore.length ; j++) {
-							temp = value;
-							for(var k = 0 ; k < locationsToIgnore[j].length ; k++) {
-								temp = spliceSlice(temp,locationsToIgnore[j][k] - k, 1,0);
-							}
-							if(tempToAdd[currKey])
-								tempToAdd[currKey].push(temp);
-							else
-								tempToAdd[currKey] = [temp];
-						}
-					}
-					else {
-						if(!(currKey in removedKeys)) {
-							if(tempToAdd[currKey])
-								tempToAdd[currKey].push("e")
-							else
-								tempToAdd[currKey] = ["e"]
-						}
-					}
-				}
-			}
-		}
-		for (var attrname in tempToAdd) { cfg[attrname] = cfg[attrname].concat(tempToAdd[attrname]); }
-
-	}
 
 	var combine = function(a, min) {
 	    var fn = function(n, src, got, all) {
