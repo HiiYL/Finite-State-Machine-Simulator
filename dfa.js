@@ -106,6 +106,10 @@ $(document).ready(function(){
 
 		console.log(stateArray["1"]);
 
+		var start = new joint.shapes.fsa.StartState({ position: { x: 0, y: 530 } });
+		link(start, stateArray[inputJSON.start]);
+		// graph.addCell(start);
+
 		for(var i = 0 ; i < inputJSON.transitions.length ; i++) {
 			transition = inputJSON.transitions[i];
 			from = stateArray[transition.source];
@@ -156,25 +160,7 @@ $(document).ready(function(){
 	    return cell;
 	}
 
-	var start = new joint.shapes.fsa.StartState({ position: { x: 50, y: 530 } });
-	graph.addCell(start);
 
-	
-
-
-
-	// link(start, code,  'start');
-	// link(code,  slash, '/');
-	// link(slash, code,  'other', [{x: 270, y: 300}]);
-	// link(slash, line,  '/');
-	// link(line,  code,  'new\n line');
-	// link(slash, block, '*');
-	// link(block, star,  '*');
-	// link(star,  block, 'other', [{x: 650, y: 290}]);
-	// link(star,  code,  '/',     [{x: 490, y: 310}]);
-	// link(line,  line,  'other', [{x: 115,y: 100}, {x: 250, y: 50}]);
-	// link(block, block, 'other', [{x: 485,y: 140}, {x: 620, y: 90}]);
-	// link(code,  code,  'other', [{x: 180,y: 500}, {x: 305, y: 450}]);
 
 
 
