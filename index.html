@@ -120,6 +120,7 @@
   // for NFA DFA Conversion
   var powerSets = [];
   var powerSetsNumberGlobal = 0;
+  var statesInput = new Object();
   //default call
   $("#inputCFG").val("A => 0A|0B \nB => 0A|1C \nC => 0C");
   $("#inputCFG").on('input',function(){
@@ -169,8 +170,9 @@
     // powerSets.push("Z");
     var statesInString = states.join('');
     statesInString = statesInString.substring(0, numLines); //take the old states only
-    
+    alert(powerSetsNumberGlobal);
     string_recursive("",statesInString);
+    
     powerSets.sort();
     // alert(powerSets);
     /***************************/
@@ -181,6 +183,7 @@
     var zeroArray = [];
     var oneArray = [];
     var startLine = 0;
+
     for (i = 0; i < numLines; i++) {
         var endLine = lines.indexOf(",", startLine);
         if(endLine == -1)
@@ -198,10 +201,9 @@
           {
             oneArray.push(lines[j+1]);
           }
-          
         }
         startLine = endLine+1;
-        alert(zeroArray);
+        
     }
     
     /************************************/
@@ -244,8 +246,10 @@
   function string_recursive($output, $leftOvers){
       if($leftOvers.length == 0 && $output!="")
       {
+
           powerSets.push($output); 
           // $("#output").text(powerSets);
+
       }
       else if(powerSets.length == powerSetsNumberGlobal)
       {
@@ -253,8 +257,8 @@
       }
       else
       {
-          string_recursive($powerSetNumber ,$output + $leftOvers.charAt(0), $leftOvers.substring(1, $leftOvers.length));
-          string_recursive($powerSetNumber ,$output, $leftOvers.substring(1, $leftOvers.length));
+          string_recursive($output + $leftOvers.charAt(0), $leftOvers.substring(1, $leftOvers.length));
+          string_recursive($output, $leftOvers.substring(1, $leftOvers.length));
       }
       
   }
