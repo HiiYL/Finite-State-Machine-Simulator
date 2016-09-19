@@ -5,6 +5,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	<script src="jquery-1.12.0.min.js"></script>
 	<script src="cnf.js"></script>
+  <script src="dfa.js"></script>
 
 </head>
 <body>
@@ -54,7 +55,10 @@
     <div class="container">
       <h3>DFA Checker</h3>
     <div class="form-group">
-      <input type="text" class="form-control" id="txtInputExp" placeholder="Input DFA">
+      <input type="text" class="form-control" id="txtInputExp" placeholder="Input DFA ( Regex )">
+    </div>
+    <div class="form-group">
+      <textarea name="input" id="dfaInputJSON" cols="20" rows="10" placeholder="Input DFA ( JSON )" class="form-control"></textarea>
     </div>
       <div class="form-group">
       <input type="text" class="form-control" id="txtInputStr" placeholder="Input String To Test">
@@ -108,10 +112,10 @@
 
 <script>
   var equationsObj = [];
-  $("#txtInputExp").on('input',function(){
-    checkInput();
-    // a*(a|b*)(a|b|c|b|d)*
-  })
+  // $("#txtInputExp").on('input',function(){
+  //   checkInput();
+  //   // a*(a|b*)(a|b|c|b|d)*
+  // })
 
   // for NFA DFA Conversion
   var powerSets = [];
