@@ -117,14 +117,15 @@ $(document).ready(function(){
 			console.log(to.attributes.position);
 			link(from,to,transition.symbol);
 		}
-		joint.layout.DirectedGraph.layout(graph, { setLinkVertices: false });
+
+		joint.layout.DirectedGraph.layout(graph, { nodeSep: 150, edgeSep: 180,rankDir: "TB",setLinkVertices: true });
 	}
 
 	var graph = new joint.dia.Graph();
 
 	var paper = new joint.dia.Paper({
 	    el: $('#myholder'),
-	    width: 800,
+	    width: 400,
 	    height: 600,
 	    gridSize: 1,
 	    model: graph
