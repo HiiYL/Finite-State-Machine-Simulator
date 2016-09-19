@@ -3,9 +3,17 @@
 <head>
 	<title>FSM Sim</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-	<script src="jquery-1.12.0.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="joint.min.css" />
+  <script src="jquery.min.js"></script>
+  <script src="lodash.min.js"></script>
+  <script src="backbone-min.js"></script>
+  <script src="joint.min.js"></script>
+  <script src="graphlib.min.js"></script>
+  <script src="dagre.min.js"></script>
+  <script src="joint.layout.DirectedGraph.min.js"></script>
 	<script src="cnf.js"></script>
   <script src="dfa.js"></script>
+
 
 </head>
 <body>
@@ -63,6 +71,7 @@
       <div class="form-group">
       <input type="text" class="form-control" id="txtInputStr" placeholder="Input String To Test">
       </div>
+      <div id="myholder"></div>
 
     <p id="status-text">Not Matching</p>
     <!-- <button class="btn btn-default" id="check">Check</button> -->
@@ -111,6 +120,7 @@
 </html>
 
 <script>
+$(document).ready(function() {
   var equationsObj = [];
   // $("#txtInputExp").on('input',function(){
   //   checkInput();
@@ -262,4 +272,5 @@
       }
       
   }
+});
 </script>
