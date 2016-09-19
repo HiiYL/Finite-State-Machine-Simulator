@@ -1,6 +1,6 @@
 $(document).ready(function(){
-	// $("#inputCFGtoCNF").val("S => ASA | aB \nA => B | S  \nB => b | e");
-	$("#inputCFGtoCNF").val("S => aXbX \nX => aY | bY | e \nY => X | c");
+	$("#inputCFGtoCNF").val("S => ASA | aB \nA => B | S  \nB => b | e");
+	// $("#inputCFGtoCNF").val("S => aXbX \nX => aY | bY | e \nY => X | c");
 	$("#inputCFGtoCNF").on('input',function(){
 		checkInput(this.value);
 	})

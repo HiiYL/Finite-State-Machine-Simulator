@@ -3,14 +3,14 @@
 <head>
 	<title>FSM Sim</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <link rel="stylesheet" type="text/css" href="joint.min.css" />
-  <script src="jquery.min.js"></script>
-  <script src="lodash.min.js"></script>
-  <script src="backbone-min.js"></script>
-  <script src="joint.min.js"></script>
-  <script src="graphlib.min.js"></script>
-  <script src="dagre.min.js"></script>
-  <script src="joint.layout.DirectedGraph.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="lib/css/joint.min.css" />
+  <script src="lib/js/jquery.min.js"></script>
+  <script src="lib/js/lodash.min.js"></script>
+  <script src="lib/js/backbone-min.js"></script>
+  <script src="lib/js/joint.min.js"></script>
+  <script src="lib/js/graphlib.min.js"></script>
+  <script src="lib/js/dagre.min.js"></script>
+  <script src="lib/js/joint.layout.DirectedGraph.min.js"></script>
 	<script src="cnf.js"></script>
   <script src="dfa.js"></script>
 
@@ -62,23 +62,15 @@
     <div class="jumbotron">
     <div class="container-fluid">
       <h3>DFA Checker</h3>
-    <div class="form-group">
-      <input type="text" class="form-control" id="txtInputExp" placeholder="Input DFA ( Regex )">
-    </div>
-    <div class="container">
+      <br/>
       <div class="form-group col-md-7">
         <textarea name="input" id="dfaInputJSON" cols="20" rows="30" placeholder="Input DFA ( JSON )" class="form-control text"></textarea>
       </div>
       <div id="myholder"></div>
-    </div>
       <div class="form-group">
       <input type="text" class="form-control" id="txtInputStr" placeholder="Input String To Test">
       </div>
-      
-
-
-    <p id="status-text">Not Matching</p>
-    <!-- <button class="btn btn-default" id="check">Check</button> -->
+      <p id="status-text">Not Matching</p>
     </div>
     <div class="container">
       <h3>NFA To DFA</h3>

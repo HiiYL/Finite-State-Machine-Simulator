@@ -31,20 +31,20 @@ $(document).ready(function(){
 	$("#dfaInputJSON").val(JSON.stringify(example, null, 2));
 
 	$("#dfaInputJSON").on('input', function() {
-		checkInputDFAJSON();
+		checkInputDFAJSON(this.value);
 	});
 
 	$("#txtInputStr").on('input',function(){
-		checkInputString();
+		checkInputString(this.value);
 	});
 
 	Array.prototype.contains = function(element){
 	    return this.indexOf(element) > -1;
 	};
 
-	function checkInputDFAJSON() {
+	function checkInputDFAJSON(value) {
 		try{
-			var inputJSON = JSON.parse($("#dfaInputJSON").val());
+			var inputJSON = JSON.parse(value);
 			graph.clear();
 			// paper.remove();
 			displayJSON(inputJSON);
@@ -54,9 +54,9 @@ $(document).ready(function(){
 		return true;
 	}
 
-	function checkInputString() {
+	function checkInputString(value) {
 		var inputJSON = JSON.parse($("#dfaInputJSON").val());
-    	var inputString = $("#txtInputStr").val();
+    	var inputString = value;
 
 
     	
@@ -91,12 +91,6 @@ $(document).ready(function(){
 	}
 
 	function displayJSON(inputJSON) {
-		// var code  = state(180, 390, 'code');
-		// var slash = state(340, 220, 'slash');
-		// var star  = state(600, 400, 'star');
-		// var line  = state(190, 100, 'line');
-		// var block = state(560, 140, 'block');
-
 		var stateArray = {}
 
 		for(var i = 0 ; i < inputJSON.states.length ; i++) {
@@ -118,7 +112,7 @@ $(document).ready(function(){
 			link(from,to,transition.symbol);
 		}
 
-		joint.layout.DirectedGraph.layout(graph, { nodeSep: 150, edgeSep: 180,rankDir: "TB",setLinkVertices: true });
+		joint.layout.DirectedGraph.layout(graph, { nodeSep: 250, edgeSep: 180,rankDir: "TB",setLinkVertices: true });
 	}
 
 	var graph = new joint.dia.Graph();
