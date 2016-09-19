@@ -1,0 +1,60 @@
+{
+	"states": [
+		"A",
+		"B",
+		"C",
+		"D",
+		"E"
+	],
+	"transitions": [
+		{
+			"symbol": [
+				"0"
+			],
+			"source": "A",
+			"target": "A"
+		},
+		{
+			"symbol": ["1"],
+			"source": "A",
+			"target": "B"
+		},
+		{
+			"symbol": ["0"],
+			"source": "B",
+			"target": "C"
+		},
+		{
+			"symbol": ["1"],
+			"source": "B",
+			"target": "D"
+		},
+		{
+			"symbol": ["0"],
+			"source": "C",
+			"target": "C"
+		},
+		{
+			"symbol": ["1"],
+			"source": "C",
+			"target": "E"
+		},
+		{
+			"symbol": ["0"],
+			"source": "D",
+			"target": "C"
+		},
+		{
+			"symbol": ["1"],
+			"source": "D",
+			"target": "D"
+		},
+		{
+			"symbol": ["0","1"],
+			"source": "E",
+			"target": "E"
+		}
+	],
+	"start": "A",
+	"accept": ["A", "C", "E"]
+}
