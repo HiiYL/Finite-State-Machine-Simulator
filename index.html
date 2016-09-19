@@ -62,7 +62,6 @@
       <textarea name="input" id="inputCFG" cols="20" rows="10" placeholder="Use 'e' as Epsilon" class="form-control"></textarea>
       
       <button onclick="checkGrammar()" id="convert" class="btn btn-default">Convert</button>
-
       <table style="width:100%" id="finalTable">
         <tr>
           <th>New State</th>
@@ -148,7 +147,12 @@
   
   function checkGrammar()
   {
+
     powerSets = [];
+
+    //refresh function
+
+
     //get user input
     var text = $('textarea#inputCFG').val();
     
@@ -254,13 +258,13 @@
     tempZeroArray = tempZeroArray.replace(/,/g, ""); //turning the array to strings, so that odd number is key, even number is the value. 
     var tempOneArray = oneArray.toString();
     tempOneArray = tempOneArray.replace(/,/g, "");
-
+    alert(powerSets);
     for(i = 0; i < tempZeroArray.length; i++)
     {
       for(j = 0; j < states.length; j++)
       {
         
-        if(tempZeroArray[i].includes(powerSets[j]) && i%2===0)
+        if(powerSets[j].includes(tempZeroArray[i]) && i%2===0)
         {
           var tempCell = document.getElementById("finalTable").rows[j+2].cells; // +2 becuz first 2 rows are pre-initialized.
           if(tempCell[2].innerHTML == "Empty")
@@ -270,21 +274,24 @@
           else
           {
               var tempText = tempCell[2].innerHTML;
-              tempText = tempText.concat(tempZeroArray[i+1]);
-              tempCell[2].innerHTML = tempText;
+              if(tempText.includes(tempZeroArray[i+1]) == false)
+              {
+                tempText = tempText.concat(tempZeroArray[i+1]);
+                tempCell[2].innerHTML = tempText;                
+              }
           }
           
         }
       }
     }
-  
+    
     //for array with input 1
     for(i = 0; i < tempOneArray.length; i++)
     {
       for(j = 0; j < states.length; j++)
       {
         
-        if(tempOneArray[i].includes(powerSets[j]) && i%2===0)
+        if(powerSets[j].includes(tempOneArray[i]) && i%2===0)
         {
           var tempCell = document.getElementById("finalTable").rows[j+2].cells; // +2 becuz first 2 rows are pre-initialized.
           if(tempCell[3].innerHTML == "Empty")
@@ -294,16 +301,19 @@
           else
           {
             var tempText = tempCell[3].innerHTML;
-            tempText = tempText.concat(tempOneArray[i+1]);
-            tempCell[3].innerHTML = tempText;
+            //check if the char has existed or not
+            if(tempText.includes(tempOneArray[i+1]) == false)
+            {
+              tempText = tempText.concat(tempOneArray[i+1]);
+              tempCell[3].innerHTML = tempText;  
+            }
           }
           
         }
       }      
     }
-  }
 
- 
+  }
 
   
     /**************************************/
