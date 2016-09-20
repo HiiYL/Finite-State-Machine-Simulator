@@ -148,11 +148,11 @@ $(document).ready(function(){
 						{
 							// console.log("lower case!");
 							upperCaseRepresentation = value[j].toUpperCase()
-							if(cfg[upperCaseRepresentation]) 
+							if(upperCaseRepresentation in cfg || upperCaseRepresentation in auxDict) 
 							{
 								// console.log("Has CFG representation!");
 
-								if(cfg[upperCaseRepresentation].length == 1 && cfg[upperCaseRepresentation][0] == value[j] ) 
+								if(cfg[upperCaseRepresentation] === value[j] ) 
 								{
 									// console.log("Correct CFG value");
 									value[j] = value[j].toUpperCase()
@@ -170,6 +170,9 @@ $(document).ready(function(){
 							}
 							else 
 							{
+								console.log(upperCaseRepresentation);
+								console.log(cfg);
+								console.log(auxDict);
 								cfg[upperCaseRepresentation] = [ value[j] ]
 								value[j] = value[j].toUpperCase()
 								console.log(value)

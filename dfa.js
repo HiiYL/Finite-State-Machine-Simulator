@@ -219,13 +219,10 @@ $(document).ready(function(){
 		var start = new joint.shapes.fsa.StartState({ position: { x: 0, y: 530 } });
 		link(start, stateArray[inputJSON.start],"start",graph);
 
-		console.log("PLS3");
-
 		for(var i = 0 ; i < inputJSON.transitions.length ; i++) {
 			transition = inputJSON.transitions[i];
 			from = stateArray[transition.source];
 			to = stateArray[transition.target];
-			console.log("PLS2");
 			if(from !== to) {
 				link(from,to,transition.symbol,graph);
 			}else {
