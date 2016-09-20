@@ -1,0 +1,49 @@
+{
+  "states": [
+    "c,d,e",
+    "a,b",
+    "f"
+  ],
+  "transitions": [
+    {
+      "symbol": [
+        "0"
+      ],
+      "source": "c,d,e",
+      "target": "c,d,e"
+    },
+    {
+      "symbol": [
+        "1"
+      ],
+      "source": "c,d,e",
+      "target": "f"
+    },
+    {
+      "symbol": [
+        "0"
+      ],
+      "source": "a,b",
+      "target": "a,b"
+    },
+    {
+      "symbol": [
+        "1"
+      ],
+      "source": "a,b",
+      "target": "c,d,e"
+    },
+    {
+      "symbol": [
+        "0",
+        "1"
+      ],
+      "source": "f",
+      "target": "f"
+    }
+  ],
+  "accept": [
+    "c,d,e"
+  ],
+  "start": "a,b"
+}

@@ -1,0 +1,96 @@
+{
+  "states": [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f"
+  ],
+  "transitions": [
+    {
+      "symbol": [
+        "0"
+      ],
+      "source": "a",
+      "target": "b"
+    },
+    {
+      "symbol": [ 
+        "1"
+      ],
+      "source": "a",
+      "target": "c"
+    },
+    {
+      "symbol": [
+        "1"
+      ],
+      "source": "b",
+      "target": "d"
+    },
+    {
+      "symbol": [
+        "0"
+      ],
+      "source": "b",
+      "target": "a"
+    },
+    {
+      "symbol": [
+        "1"
+      ],
+      "source": "d",
+      "target": "f"
+    },
+    {
+      "symbol": [
+        "0"
+      ],
+      "source": "d",
+      "target": "e"
+    },
+    {
+      "symbol": [
+        "0",
+        "1"
+      ],
+      "source": "f",
+      "target": "f"
+    },
+    {
+      "symbol": [
+        "0"
+      ],
+      "source": "e",
+      "target": "e"
+    },
+    {
+      "symbol": [
+        "1"
+      ],
+      "source": "e",
+      "target": "f"
+    },
+    {
+      "symbol": [
+        "0"
+      ],
+      "source": "c",
+      "target": "e"
+    },
+    {
+      "symbol": [
+        "1"
+      ],
+      "source": "c",
+      "target": "f"
+    }
+  ],
+  "start": "a",
+  "accept": [
+    "c",
+    "d",
+    "e"
+  ]
+}
