@@ -17,8 +17,6 @@ $(document).ready(function(){
 		for(var i = 0 ; i < stringToTest.length ; i++) {
 			table[0][i] = getKeysByValue(cfg, stringToTest[i],true).join("")
 		}
-
-		console.log(table)
 		// table[1][1] = table[0][1][0]
 
 
@@ -43,15 +41,13 @@ $(document).ready(function(){
 						// console.log(l-1)
 						// console.log(k-l+j-1)
 						// console.log(left + " " + right);
-						// console.log(j + " " + k + " " + l);
+						
 						foundKeys = getKeysByValue(cfg, stringToSearch, true)
 						if(foundKeys.length > 0) {
 							table[j][k] = foundKeys[0]
 							break
 						}else if(stringToSearch.length > 1) {
 							possiblePermutations = permutator(stringToSearch.split(""));
-							console.log(possiblePermutations.join(""));
-							console.log(j + " " + k + " " + l);
 							found=false
 							for (var i = 0; i < possiblePermutations.length; i++) {
 								foundKeys = getKeysByValue(cfg,possiblePermutations[i].join(""), true);
@@ -61,8 +57,10 @@ $(document).ready(function(){
 									break;
 								}
 							}
-							if(found)
+							if(found) {
+								console.log("FOUND");
 								break;
+							}
 							// console.log("REVERSING")
 							// foundKeys = getKeysByValue(cfg, reverse(stringToSearch), true)
 							// if(foundKeys.length > 0) {
@@ -74,6 +72,14 @@ $(document).ready(function(){
 				}
 			}
 		}
+		for(var q = 0 ; q < table.length; q++) {
+			var row =  document.getElementById("CYKResult").insertRow(q);
+			for(var r = 0 ; r < table[q].length; r++) {
+				var cell = row.insertCell(r);
+				cell.innerHTML = table[q][r];
+			}
+		}
+		
 
 		console.log(table);
 		console.log(cfg);
@@ -81,6 +87,13 @@ $(document).ready(function(){
 
 	function reverse(s){
 	    return s.split("").reverse().join("");
+	}
+	function findSubstrings(s, length) {
+		substrings = []
+		for (var i = 0; i < s.length - length + 1; i++) {
+			substrings.push(s.substring(i, length + i));
+		}
+		return substrings;
 	}
 
 	function permutator(inputArr) {
