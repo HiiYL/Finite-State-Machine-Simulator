@@ -75,6 +75,16 @@
       <h3>NFA->DFA Conversion</h3>
       <p id="output">Null</p>
     </div>
+
+    <div class="minimize DFA"> //TKL
+      <h4>Minimize DFA</h4>
+      <textarea name="inputDFA" id="inputDFA" cols="20" rows="10" placeholder="S -> 1A|0B" class="form-control"></textarea>
+      <h5>Final States</h5>
+      <textarea name="finalstates" id="finalstates" cols="20" rows="2" placeholder="ABCD" class="form-control"></textarea>
+      <button id="minimizeDFA" class="btn btn-default" onclick="getDataDFA()">Minimize</button>
+
+    </div>
+
 		<div class="container">
 			<h3>CFG into Chomsky normal form (CNF).</h3>
 			<textarea name="input" id="inputCFGtoCNF" cols="20" rows="10" placeholder="Use 'e' as Epsilon" class="form-control"></textarea>
@@ -169,4 +179,376 @@
       }
       
   }
+
+  /*function getDataDFA()
+  {
+    var str = $("#inputDFA").val();
+    for(var i = 0; i < str.length; i+=3)
+    {      
+        str[i] = {};
+        str[i][str[i+1]] = str[i+2];     
+    }
+    alert(str[0].str[1]);
+  }*/
+  
+
+  /*function getDataDFA()
+  {
+    var inputRG=$("#inputDFA").val();
+    var finalstates=$("#finalstates").val();
+    var states = [];
+    var statesInput = [];
+    var statesValue = [];
+    var statesCheck = [];
+
+    inputRG = inputRG.replace(/\s/g, "");
+
+    for(var i = 0; i< inputRG.length; i++)
+    {
+      if(inputRG[i]==">" || inputRG[i]=="|")
+      {
+        var input = inputRG[i+1];
+        var inputIndex = i;
+        var destination = inputRG[i+2];
+        var destinationIndex = i;
+        statesInput.push(input);
+        statesValue.push(destination);
+        i++;
+    
+      }else if(inputRG[i+1]=="-")
+      {
+        var tempState = inputRG[i];
+        var tempStateIndex = i;
+        states.push(inputRG[tempStateIndex]);
+        statesCheck.push(false);
+        i++;
+      }
+    }
+    var accepting=[[]];
+    var nonAccepting=[];
+    for(var i=0;i<states.length;i++)
+    {
+      for(var j=0;j<finalstates.length;j++)
+      {
+        if(states[i]==finalstates[j])
+        {
+          accepting.push(i); //index of states that is accepting states
+
+        }
+      }
+      nonAccepting.push(i);
+    }
+    var count=0;
+    var set = [[]];
+
+    for(var i = 0; i < states.length; i++)
+    {
+      var innerCount=0;
+      for(var a=0; a< accepting.length; a++)
+      {
+        
+        if(statesCheck[i]==false&&states[i]==accepting[a])
+        {
+          set[count][innerCount]=i; //set the index into new array
+          innerCount++;
+          break;
+        }
+      }
+      
+      for(var j = i; j < accepting.length; j++)
+      {
+        if(statesValue[i*2]==statesValue[j*2]&&statesValue[i*2+1]==statesValue[j*2+1]&&statesCheck[i]==false&&statesCheck[j]==false)
+        {
+          //eval("set"+count+".push(j)");
+          statesCheck[i]=true;
+          statesCheck[j]=true;
+          set[count][innerCount]=accepting[j];
+          innerCount++;
+        }
+      }
+      count++;
+
+    }
+
+    for(var i = 0;i<states.length;i++)
+    {
+      var innerCount=0;
+      for(var a=0; a< nonAccepting.length; a++)
+      {
+        
+        if(statesCheck[i]==false&&states[i]==nonAccepting[a])
+        {
+          set[count][innerCount]=i; //set the index into new array
+          innerCount++;
+          break;
+        }
+      }
+
+
+    }
+    for(var k=0;k<accepting.length;k++)
+    {
+      if(statesCheck[accepting[k]]==true)
+      {
+        set[count]=accepting[k];
+        //eval("set"+count+".push(j)");
+        count++;
+      }else
+      {
+        set[count]=accepting[k];
+        //eval("set"+count+".push(j)");
+        count++;
+      }
+    }
+
+    
+
+    for(var j = 1; j < nonAccepting.length; j++)
+    {
+      if(statesValue[nonAccepting[0]*2]==statesValue[nonAccepting[j]*2]&&statesValue[nonAccepting[0]*2+1]==statesValue[nonAccepting[j]*2+1])
+      {
+        
+        eval("set"+count+".push(j)");
+      }else
+      {
+        eval("set"+count+1+".push(j)");
+      }
+    }
+     
+    
+
+    //alert(isLetter(data[0]));
+    //alert(states[0]);
+    //alert(statesInput[0]);
+    alert(set1);
+    alert(set2);
+
+  }*/
+
+  function getDataDFA()
+  {
+    var inputRG=$("#inputDFA").val();
+    var finalstates=$("#finalstates").val();
+    var acceptingStates=[];
+    var nonAcceptingStates=[];
+    var acceptingFull={};
+    var nonAcceptingFull={};
+    var accept=false;
+    var nonAccept=false;
+    var tempAccept= parseInt("0");
+    var tempNonAccept= parseInt("0");
+
+    for(var i = 0; i<finalstates.length;i++)
+    {
+      acceptingStates.push(finalstates[i]);
+    }
+
+    inputRG = inputRG.replace(/\s/g, "");
+    for(var i=0;i<inputRG.length;i++)
+    {
+      if(inputRG[i+1]=="-")
+      {
+        nonAcceptingStates.push(inputRG[i]);
+        
+      }
+    }
+    
+    var tempLength=nonAcceptingStates.length;
+
+    for(var j=0;j<tempLength;j++)
+    {
+      for(var k=0;k<acceptingStates.length;k++)
+      {
+        if(nonAcceptingStates[j]==acceptingStates[k])
+        {
+          
+          var temp = nonAcceptingStates[j];
+          nonAcceptingStates[j]=nonAcceptingStates[0];
+          nonAcceptingStates[0]=temp;
+          nonAcceptingStates.shift();
+          j--;
+          //tempLength--;
+          
+        }
+      }
+      
+    }
+    //for(var i =0; i<2;i++)
+    //acceptingFull[tempAccept][0]=inputRG[i+4];
+    
+    for(var i=0;i<inputRG.length;i++)
+    {
+      //tempAccept=0;
+      //tempNonAccept=0;
+      for(var j=0;j<acceptingStates.length;j++)
+      {
+        if(inputRG[i]==acceptingStates[j] && inputRG[i+1]=="-")
+        {
+          acceptingFull[inputRG[i]]=[inputRG[i+4],inputRG[i+7]];
+
+          //tempAccept+=1;
+        }
+      }
+
+      for(var k=0;k<nonAcceptingStates.length;k++)
+      {
+        if(inputRG[i]==nonAcceptingStates[k] && inputRG[i+1]=="-")
+        {
+          //alert(tempNonAccept);
+          //nonAcceptingFull[tempNonAccept][0]=inputRG[i+4];
+          //nonAcceptingFull[tempNonAccept][1]=inputRG[i+7];
+          //tempNonAccept+=1;
+          var test=inputRG[i+4];
+          var test2=inputRG[i+7];
+          nonAcceptingFull[inputRG[i]]=[inputRG[i+4],inputRG[i+7]];
+        }
+      }
+    }
+
+    var totalObj =[acceptingFull,nonAcceptingFull];
+    var minimizedObj ={};
+    var groups = [];
+    var group ={};
+    /*for(var j=0; j<Object.keys(totalObj).length;j++)
+    {
+      var check1 = false;
+      var check2 = false;
+        for(var i=0;i<Object.keys(totalObj[j]).length-1;i++)
+        {
+          console.log(i);
+          if(totalObj[0][acceptingStates[i]][0] in totalObj[j] && 
+            totalObj[0][acceptingStates[i+1]][0] in totalObj[j])
+          {
+            check1=true;
+            
+
+          }else if(totalObj[0][acceptingStates[i]][1] in totalObj[j] && 
+            totalObj[0][acceptingStates[i+1]][1] in totalObj[j])
+          {
+            check2 = true;
+          } 
+        }
+        if(check1==true&&check2==true)
+          {
+            group[acceptingStates[i]]=[acceptingFull[acceptingStates][0]],acceptingFull[acceptingStates[1]];
+            groups.push(group);
+            break;
+          }
+        
+    }*/
+    var check1=false;
+    var check2=false;
+    var checkingA = [];
+    var checkingNA = [];
+    for(var z=0; z<acceptingStates.length;z++)
+    {
+      checkingA.push(false);
+    }
+    for(var z2=0; z2<nonAcceptingStates.length;z2++)
+    {
+      checkingNA.push(false);
+    }
+
+    for(var outerCounter=0; outerCounter<Object.keys(totalObj).length;outerCounter++)
+    {
+      for(var i=0;i<Object.keys(totalObj[outerCounter]).length-1;i++)
+      {
+
+        for(var j=0;j<Object.keys(totalObj).length;j++)
+        {
+          console.log(totalObj[outerCounter]);
+          console.log("TAG " + acceptingStates[i+1]);
+          console.log(i);
+          console.log(Object.keys(totalObj[outerCounter]).length-1);
+          console.log(acceptingStates);
+          
+          //console.log(totalObj[outerCounter][acceptingStates[i]][0]);
+          //console.log(totalObj[outerCounter][acceptingStates[i+1]][0]);
+          //console.log(totalObj[j]);
+          if(outerCounter==0)
+          {
+            if(totalObj[outerCounter][acceptingStates[i]][0] in totalObj[j] && 
+              totalObj[outerCounter][acceptingStates[i+1]][0] in totalObj[j])
+            {
+               console.log("BCDBCDBCD");
+              //console.log(totalObj[outerCounter][acceptingStates[i]][0] in totalObj[j]);
+              check1=true;
+              
+
+            }else if(totalObj[outerCounter][acceptingStates[i]][1] in totalObj[j] && 
+              totalObj[outerCounter][acceptingStates[i+1]][1] in totalObj[j])
+            {
+              console.log("ASDASDASDASDASD");
+
+              check2 = true;
+            }
+          }else if(outerCounter==1)
+          {
+
+            if(totalObj[outerCounter][nonAcceptingStates[i]][0] in totalObj[j] && 
+              totalObj[outerCounter][nonAcceptingStates[i+1]][0] in totalObj[j])
+            {
+              check1=true;
+              
+
+            }else if(totalObj[outerCounter][nonAcceptingStates[i]][1] in totalObj[j] && 
+              totalObj[outerCounter][nonAcceptingStates[i+1]][1] in totalObj[j])
+            {
+              
+              check2 = true;
+            }
+          }
+            
+        }
+
+        if(check1&&check2)
+        {
+          if(checkingA[i]==false && outerCounter==0)
+          {
+             group[acceptingStates[i]]=[acceptingFull[acceptingStates[i]][0],acceptingFull[acceptingStates[i]][1]];
+             checkingA[i]=true;
+          }
+          if(checkingA[i+1]==false && outerCounter==0)
+          {
+            group[acceptingStates[i+1]]=[acceptingFull[acceptingStates[i+1]][0],acceptingFull[acceptingStates[i+1]][1]];
+            checkingA[i+1]=true;
+          }
+          if(checkingNA[i]==false && outerCounter==1)
+          {
+            
+            group[nonAcceptingStates[i]]=[nonAcceptingFull[nonAcceptingStates[i]][0],nonAcceptingFull[nonAcceptingStates[i]][1]];
+            checkingNA[i]=true;
+          }
+          if(checkingNA[i+1]==false && outerCounter==1)
+          {
+            group[nonAcceptingStates[i+1]]=[nonAcceptingFull[nonAcceptingStates[i+1]][0],nonAcceptingFull[nonAcceptingStates[i+1]][1]];
+            checkingNA[i+1]=true;
+          }
+             
+              
+         // groups.push(group);
+          //console.log(group);
+          
+          check1=false;
+          check2=false;
+
+        }
+      }
+      check1=false;
+      check2=false;
+      groups.push(group);
+      group ={};
+    }
+    console.log(groups);
+    console.log(checkingA);
+    console.log(checkingNA);
+    //console.log(acceptingFull[acceptingStates[0]][0]);
+    //console.log(totalObj[0][acceptingStates[0]][0]);
+    //console.log(totalObj[0][acceptingStates[0]][0]in acceptingFull);
+}
+
+  function isLetter(str) {
+  return str.length === 1 && str.search(/[a-z]/i)==0;
+  }
+
 </script>
